@@ -11,9 +11,9 @@ import {
   MenuItem,
   Button,
   Alert,
-  AlertTitle,
 } from '@mui/material'
 import { useBirthdayInfo } from '@/hooks/useBirthdateInfo'
+import { ICountryDTO } from '@/types'
 
 const validationSchema = object({
   name: string().required('Name is required'),
@@ -22,15 +22,10 @@ const validationSchema = object({
   country: string().required('Country is required'),
 })
 
-// This is a list of countries that you can use in the select
-// TODO => fetch this list from an API
-const countries = [
-  { code: 'US', name: 'United States' },
-  { code: 'CA', name: 'Canada' },
-  // Add more countries here
-]
-
-export const UserCreator: React.FC = () => {
+interface UserCreatorProps {
+  countries: ICountryDTO[]
+}
+export const UserCreator: React.FC<UserCreatorProps> = ({ countries }) => {
   const [showAlert, setShowAlert] = React.useState(false)
   const formik = useFormik({
     initialValues: {
@@ -105,7 +100,7 @@ export const UserCreator: React.FC = () => {
               onChange={formik.handleChange}
             >
               {countries.map((country) => (
-                <MenuItem key={country.code} value={country.code}>
+                <MenuItem key={country._id} value={country.name}>
                   {country.name}
                 </MenuItem>
               ))}
