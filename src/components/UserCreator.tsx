@@ -1,7 +1,18 @@
 import React from 'react'
 import { useFormik } from 'formik'
 import { object, string } from 'yup'
-import { Stack, Typography, TextField } from '@mui/material'
+import {
+  Stack,
+  Typography,
+  TextField,
+  FormControl,
+  Select,
+  InputLabel,
+  MenuItem,
+  Button,
+  Alert,
+} from '@mui/material'
+import { useBirthdayInfo } from '@/hooks/useBirthdateInfo'
 
 const validationSchema = object({
   name: string().required('Name is required'),
@@ -10,7 +21,16 @@ const validationSchema = object({
   country: string().required('Country is required'),
 })
 
+// This is a list of countries that you can use in the select
+// TODO => fetch this list from an API
+const countries = [
+  { code: 'US', name: 'United States' },
+  { code: 'CA', name: 'Canada' },
+  // Add more countries here
+]
+
 export const UserCreator: React.FC = () => {
+  const [showAlert, setShowAlert] = React.useState(false)
   const formik = useFormik({
     initialValues: {
       name: '',
@@ -20,9 +40,14 @@ export const UserCreator: React.FC = () => {
     },
     validationSchema,
     onSubmit: (values) => {
+      setShowAlert(true)
       console.log(values)
     },
   })
+
+  const { age, birthMonth, birthDay, birthDayNumber } = useBirthdayInfo(
+    formik.values.birthdate
+  )
 
   return (
     <React.Fragment>
@@ -65,6 +90,45 @@ export const UserCreator: React.FC = () => {
             error={formik.touched.birthdate && Boolean(formik.errors.birthdate)}
             helperText={formik.touched.birthdate && formik.errors.birthdate}
           />
+          <FormControl
+            fullWidth
+            size="small"
+            error={formik.touched.country && Boolean(formik.errors.country)}
+          >
+            <InputLabel id="country-label">Country</InputLabel>
+            <Select
+              labelId="country-label"
+              id="country"
+              name="country"
+              value={formik.values.country}
+              onChange={formik.handleChange}
+            >
+              {countries.map((country) => (
+                <MenuItem key={country.code} value={country.code}>
+                  {country.name}
+                </MenuItem>
+              ))}
+            </Select>
+            {formik.touched.country && formik.errors.country && (
+              <Typography variant="caption" color="error">
+                {formik.errors.country}
+              </Typography>
+            )}
+          </FormControl>
+
+          <Button type="submit" variant="contained">
+            Save
+          </Button>
+
+          <pre>{JSON.stringify(formik.values, null, 2)}</pre>
+
+          {showAlert && (
+            <Alert severity="success">
+              Hello {formik.values.name} from {formik.values.country} on {birthDayNumber},{' '}
+              {''}
+              {birthDay} of {birthMonth}, you will have {age}!
+            </Alert>
+          )}
         </Stack>
       </form>
     </React.Fragment>
