@@ -11,6 +11,7 @@ import {
   MenuItem,
   Button,
   Alert,
+  AlertTitle,
 } from '@mui/material'
 import { useBirthdayInfo } from '@/hooks/useBirthdateInfo'
 
@@ -116,14 +117,12 @@ export const UserCreator: React.FC = () => {
             )}
           </FormControl>
 
-          <Button type="submit" variant="contained">
+          <Button type="submit" variant="outlined">
             Save
           </Button>
-
-          <pre>{JSON.stringify(formik.values, null, 2)}</pre>
-
+          {/* <pre>{JSON.stringify(formik.values, null, 2)}</pre> */}
           {showAlert && (
-            <Alert severity="success">
+            <Alert severity="success" variant="outlined">
               Hello {formik.values.name} from {formik.values.country} on {birthDayNumber},{' '}
               {''}
               {birthDay} of {birthMonth}, you will have {age}!
