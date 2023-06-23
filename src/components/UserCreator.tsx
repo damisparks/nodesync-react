@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useId } from 'react'
 import { useFormik } from 'formik'
 import { object, string } from 'yup'
 import {
@@ -14,6 +14,7 @@ import {
 } from '@mui/material'
 import { useBirthdayInfo } from '@/hooks/useBirthdateInfo'
 import { ICountryDTO } from '@/types'
+import { UserContext } from '@/context/UserContext'
 
 const validationSchema = object({
   name: string().required('Name is required'),
@@ -27,17 +28,22 @@ interface UserCreatorProps {
 }
 export const UserCreator: React.FC<UserCreatorProps> = ({ countries }) => {
   const [showAlert, setShowAlert] = React.useState(false)
+  const { addUser } = React.useContext(UserContext)
+
   const formik = useFormik({
     initialValues: {
       name: '',
       surname: '',
       birthdate: '',
       country: '',
+      _id: useId(),
     },
     validationSchema,
-    onSubmit: (values) => {
+    onSubmit: (values, { setSubmitting }) => {
       setShowAlert(true)
       console.log(values)
+      addUser(values)
+      setSubmitting(false)
     },
   })
 
@@ -112,8 +118,8 @@ export const UserCreator: React.FC<UserCreatorProps> = ({ countries }) => {
             )}
           </FormControl>
 
-          <Button type="submit" variant="outlined">
-            Save
+          <Button type="submit" variant="outlined" disabled={formik.isSubmitting}>
+            {formik.isSubmitting ? 'Loading...' : 'Save'}
           </Button>
           {/* <pre>{JSON.stringify(formik.values, null, 2)}</pre> */}
           {showAlert && (

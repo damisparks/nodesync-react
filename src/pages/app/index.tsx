@@ -2,7 +2,9 @@ import React, { useEffect } from 'react'
 import { Alert, Box, Paper, Typography } from '@mui/material'
 import { UserCreator } from '@/components/UserCreator'
 import { LoadingScreen } from '@/components/LoadingScreen'
-import { ICountryDTO } from '@/types'
+import { ICountryDTO, IUserDTO } from '@/types'
+import { UserList } from '@/components/UserList'
+import { UserContext } from '@/context/UserContext'
 
 const API_URL = 'http://localhost:9000/api/v0/countries'
 
@@ -10,6 +12,7 @@ export const AppIndexPage: React.FC = () => {
   const [countries, setCountries] = React.useState<ICountryDTO[]>([])
   const [loading, setLoading] = React.useState(true)
   const [error, setError] = React.useState('')
+  const [users, setUsers] = React.useState<IUserDTO[]>([])
 
   useEffect(() => {
     const fetchResources = async () => {
@@ -48,30 +51,33 @@ export const AppIndexPage: React.FC = () => {
       <Typography color="primary" variant="h1">
         Intive - FDV Exercise
       </Typography>
-      <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' } }}>
-        <Paper elevation={3} sx={{ p: 2, m: 1, flexGrow: 1 }}>
-          <UserCreator countries={countries} />
-          {error && (
-            <Alert variant="outlined" sx={{ marginTop: 2 }} severity="error">
-              {error}
-            </Alert>
-          )}
-        </Paper>
 
-        <Box
-          sx={{
-            bgcolor: 'primary.main',
-            color: 'primary.contrastText',
-            p: 2,
-            m: 1,
-            flexGrow: 1,
-          }}
-        >
-          <Typography variant="h5" component="div">
-            Box 2
-          </Typography>
+      <UserContext.Provider
+        value={{
+          users,
+          addUser: (user) => setUsers((prevUsers) => [...prevUsers, user]),
+        }}
+      >
+        <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' } }}>
+          <Paper elevation={3} sx={{ p: 2, m: 1, flexGrow: 1 }}>
+            <UserCreator countries={countries} />
+            {error && (
+              <Alert variant="outlined" sx={{ marginTop: 2 }} severity="error">
+                {error}
+              </Alert>
+            )}
+          </Paper>
+
+          <Box
+            sx={{
+              m: 1,
+              flexGrow: 1,
+            }}
+          >
+            <UserList />
+          </Box>
         </Box>
-      </Box>
+      </UserContext.Provider>
     </React.Fragment>
   )
 }
