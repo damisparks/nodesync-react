@@ -58,8 +58,15 @@ export const AppIndexPage: React.FC = () => {
           addUser: (user) => setUsers((prevUsers) => [...prevUsers, user]),
         }}
       >
-        <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' } }}>
-          <Paper elevation={3} sx={{ p: 2, m: 1, flexGrow: 1 }}>
+        <Box
+          sx={{
+            display: 'flex',
+            paddingX: 2,
+            paddingY: 1,
+            flexDirection: { xs: 'column', md: 'row', alignItems: 'flex-start' },
+          }}
+        >
+          <Paper elevation={3} sx={{ m: 1, p: 2, flexGrow: 1, width: '100%' }}>
             <UserCreator countries={countries} />
             {error && (
               <Alert variant="outlined" sx={{ marginTop: 2 }} severity="error">
@@ -70,8 +77,8 @@ export const AppIndexPage: React.FC = () => {
 
           <Box
             sx={{
-              m: 1,
-              flexGrow: 1,
+              paddingX: 2,
+              width: '100%',
             }}
           >
             <UserList />
