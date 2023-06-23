@@ -41,7 +41,6 @@ export const UserCreator: React.FC<UserCreatorProps> = ({ countries }) => {
     validationSchema,
     onSubmit: (values, { setSubmitting }) => {
       setShowAlert(true)
-      console.log(values)
       addUser(values)
       setSubmitting(false)
     },
